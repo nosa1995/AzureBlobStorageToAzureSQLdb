@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# ## AzureBlobStorageToAzureDb
+# ## AzureBlobStorageToAzureDb 
 # 
-# New notebook
+# Developer: Nosa
 
-# In[11]:
 
 
 # Import necessary libraries
@@ -19,13 +18,13 @@ spark = SparkSession.builder \
 # Set up the necessary configuration for accessing Azure Blob Storage using SAS token
 spark.conf.set("fs.azure.account.auth.type.nosa-datalake.blob.core.windows.net", "SAS")
 spark.conf.set("fs.azure.sas.token.provider.type.nosa-datalake.blob.core.windows.net", "org.apache.hadoop.fs.azurebfs.sas.FixedSASTokenProvider")
-spark.conf.set("fs.azure.sas.fixed.token.nosa-datalake.blob.core.windows.net", "sp=r&st=2024-06-12T004KjEt4SeSK17QeMmBGi7rTKsaHZtoeUBXDg%3D")
+spark.conf.set("fs.azure.sas.fixed.token.nosa-datalake.blob.core.windows.net", "sp=r&st=2024-06-12T00=c&sig=JLUEX1eUBXDg%3D")
 
 # Define the path for the Parquet file
 container_name = 'nosa-container'
 account_name = 'nosa-datalake'
 file_path = 'customerdata.snappy.parquet'
-sas_token = 'sp=r&st=2024-06-12T004KjEt4SeSK17QeMmBGi7rTKsaHZtoeUBXDg%3D'
+sas_token = 'sp=r&st=2024-06-12T00=c&sig=JLUEX1eUBXDg%3D'
 wasbs_path = f'wasbs://{container_name}@{account_name}.blob.core.windows.net/{file_path}'
 
 # Read the Parquet file from Azure Blob Storage
@@ -35,14 +34,14 @@ df = spark.read.parquet(wasbs_path)
 df.show(2)
 
 
-# In[6]:
+# In[10]:
 
 
 spark.conf.set("sprk.sql.parquet.vorder.enabled", "true") # Enable Verti-Parquet write
 spark.conf.set("spark.microsoft.delta.optimizeWrite.enabled", "true") # Enable automatic delta optimized write
 
 
-# In[13]:
+# In[11]:
 
 
 from pyspark.sql import SparkSession
@@ -53,8 +52,8 @@ spark = SparkSession.builder \
 
 # Prepare the JDBC URL with credentials to DB
 jdbc_url = (
-    "jdbc:sqlserver://nosa-practice.database.windows.net;"  # server name
-    "databaseName=Nosadb;"
+    "jdbc:sqlserver://nosa-practical-work.database.windows.net;"  # server name
+    "databaseName=Ndb;"
     "user=nosa;"
     "password=123;"
 )
@@ -79,4 +78,18 @@ df.write \
 
 print(f"DataFrame written to new Azure SQL Database table: {new_table_name}")
 
+
+# In[12]:
+
+
+#Write to optimized delta table
+table_name = "Customer_raw"
+df.write.mode("overwrite").format("delta").save(f"Tables/{table_name}")
+print(f"Spark dataframe saved to delta table: {table_name}")
+
+
+# In[13]:
+
+
+get_ipython().run_cell_magic('sql', '', 'select * from Customer_raw\n')
 
