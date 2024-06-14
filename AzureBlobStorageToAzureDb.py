@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# ## AzureBlobStorageToAzureDb 
+# ## AzureBlobStorageToAzureDb Copy
 # 
-# Developer: Nosa
+# New notebook
 
+# In[9]:
 
 
 # Import necessary libraries
@@ -72,8 +73,8 @@ df.write \
     .mode("append") \
     .option("url", jdbc_url) \
     .option("dbtable", new_table_name) \
-    .option("user", "noza") \
-    .option("password", "6007521sH!") \
+    .option("user", "nosa") \
+    .option("password", "123") \
     .save()
 
 print(f"DataFrame written to new Azure SQL Database table: {new_table_name}")
